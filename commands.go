@@ -67,6 +67,22 @@ func handlerRegister(s *state, cmd command) error {
 	return nil
 }
 
+func handlerClearUsers(s *state, cmd command) error {
+	if len(cmd.args) != 0 {
+		return errors.New("no arg required")
+	}
+
+	err := s.db.ClearUsers(context.Background())
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("User table was cleared\n")
+
+	return nil
+}
+
 func (c *commands) run(s *state, cmd command) error {
 	command, exists := c.handlers[cmd.name]
 	if !exists {

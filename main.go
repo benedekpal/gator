@@ -1,11 +1,14 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/benedekpal/gator/internal/config"
+	"github.com/benedekpal/gator/internal/database"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -19,9 +22,18 @@ func main() {
 
 	fmt.Printf("Read config: %+v\n", cnfg)
 
+	db, err := sql.Open("postgres", cnfg.DBURL)
+	if err != nil {
+		log.Fatalf("error opening sql: %v", err)
+	}
+
+	dbQueries := database.New(db)
+
+	s.db = dbQueries
 	s.config = &cnfg
 
 	cmds.register("login", handlerLogin)
+	cmds.register("register", handlerRegister)
 
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: cli <command> [args...]")
@@ -45,4 +57,5 @@ func main() {
 		log.Fatalf("error reading config: %v", err)
 	}
 	fmt.Printf("Read config again: %+v\n", cnfg)
+
 }

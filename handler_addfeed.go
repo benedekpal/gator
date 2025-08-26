@@ -37,6 +37,21 @@ func handlerAddFeed(s *state, cmd command) error {
 		return dberror
 	}
 
+	feedFollowInstance := database.CreateFeedFollowParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    feedInstance.UserID,
+		FeedID:    feedInstance.ID,
+	}
+
+	_, fferr := s.db.CreateFeedFollow(context.Background(), feedFollowInstance)
+
+	if fferr != nil {
+		// optionally: detect unique violation if using pq
+		return fferr
+	}
+
 	fmt.Println("ID:", feed.ID)
 	fmt.Println("CreatedAt:", feed.CreatedAt)
 	fmt.Println("UpdatedAt:", feed.UpdatedAt)

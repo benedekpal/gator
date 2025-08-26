@@ -6,6 +6,10 @@ RETURNING *;
 -- name: ClearFeeds :exec
 DELETE FROM feeds;
 
+-- name: GetFeedByURL :one
+SELECT * FROM feeds
+WHERE url = $1;
+
 -- name: GetFeeds :many
 SELECT 
     f.name,

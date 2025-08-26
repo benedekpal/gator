@@ -2,15 +2,10 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 )
 
-func handlerGetUsers(s *state, cmd command) error {
-	if len(cmd.args) != 0 {
-		return errors.New("no arg required")
-	}
-
+func handlerGetUsers(s *state, _ command) error {
 	users, err := s.db.GetUsers(context.Background())
 
 	if err != nil {

@@ -10,14 +10,9 @@ import (
 	"github.com/google/uuid"
 )
 
-func handlerFollow(s *state, cmd command) error {
+func handlerFollow(s *state, cmd command, user database.User) error {
 	if len(cmd.args) != 1 {
 		return errors.New("url required")
-	}
-
-	currentUserInstance, err := s.db.GetUser(context.Background(), s.config.CurrentUserName)
-	if err != nil {
-		return err
 	}
 
 	currentFeedInstance, err := s.db.GetFeedByURL(context.Background(), cmd.args[0])
@@ -29,7 +24,7 @@ func handlerFollow(s *state, cmd command) error {
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		UserID:    currentUserInstance.ID,
+		UserID:    user.ID,
 		FeedID:    currentFeedInstance.ID,
 	}
 
